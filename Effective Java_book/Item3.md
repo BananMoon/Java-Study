@@ -1,0 +1,79 @@
+## Item3. private 생성자나 열거 타입으로 싱글턴임을 보증하라.
+
+### 1. 싱글턴 (Singleton)
+- 인스턴스가 오직 1개만 생성되어야하는 경우 사용되는 패턴 (디자인 패턴 중 하나)
+- 하나의 인스턴스를 메모리에 등록 -> 여러 스레드가 동시에 해당 인스턴스를 공유하여 사용할 수 있음 -> 요청이 많은 곳에서 효율성↑
+- 주의해야할 점 : **동시성(Concurrency) 문제** 고려해서 싱글턴 설계해야 함<br>
+  (➡️[동시성 문제 설명](https://github.com/BananMoon/Java-Study/blob/main/Effective%20Java_book/Item3_%EB%8F%99%EC%8B%9C%EC%84%B1%EB%AC%B8%EC%A0%9C.md) 참고)
+
+<br>
+
+#### 싱글턴 패턴 구현에 사용되는 몇가지 이디엄(오랫동안 널리 사용되어 온) 방식
+1. Eager Initialization (이른 초기화, **Thread-safe**)
+- ❓ `static` 키워드의 특징을 이용
+- ❓ 클래스 로더가 초기화하는 시점에 (컴파일 시점에 성격이 결정되는)정적 바인딩을 통해 인스턴스를 메모리에 등록해서 사용하는 것
+- 클래스 로더(라이브러리를 위치시키고 내용물을 읽고 라이브러리들 안에 포함된 클래스들을 읽는 역할. 자바 클래스를 로드하는 역할)에 의해 클래스가 최초로 로딩될 때 객체가 생성되기 때문에 **Thread-safe**하다.
+- 싱글턴 구현 시 중요한 점! 멀티 스레딩 환경에서도 동작 가능하게 구현, 즉 Thread-safe가 보장되어야 한다.<br>
+
+<예시> 아래 Singleton 클래스는 로드될 때 한개의 인스턴스 uniqueInstance가 생성되는 것을 알 수 있다.
+```java
+public class Singleton {
+    // Eager Initialization
+    private static Singleton uniqueInstance = new Singleton();
+
+    private Singleton() {}
+
+    public static Singleton getInstance() {
+      return uniqueInstance; 
+    } 
+}
+```
+
+2. Lazy Initialization with synchronized (동기화 블럭, Thread-safe) : `synchronized` 키워드를 이용한 게으른 초기화 방식
+- ❓ 게으른 초기화 방식이란, 컴파일 시점에 인스턴스를 생성 ✖️, **인스턴스가 필요한 시점에 요청**하여 동적 바인딩(런타임 시에 성격 결정)을 통해 인스턴스를 생성하는 방식이다.
+- 메서드에 동기화 키워드를 부여함으로써 Thread-safe를 보장한다.
+```java
+public class Singleton {
+    private static Singleton uniqueInstance;
+
+    private Singleton() {}
+
+    // Lazy Initailization
+    public static synchronzied Singleton getInstance() {
+      if(uniqueInstance == null) {
+         uniqueInstance = new Singleton();
+      }
+      return uniqueInstance;
+    }
+}
+```
+- But, 동기화 키워드를 부여함으로써, <br>
+  인스턴스가 생성됐든, 안됐든 무조건 동기화가 이루어지기 때문에 성능이 매우 떨어진다. (synchronized 키워드 사용시 문제점)
+- 이를 개선한 방식이 아래 방식.
+
+3. Lazy Initialization.Double Checking Locking (DCL, Thrad-safe)
+- ❓ **인스턴스가 생성되지 않은 경우에만 동기화 블록이 실행되게끔 구현**하는 방식
+```java
+public class Singleton {
+    private volatile static Singleton uniqueInstance;
+
+    private Sigleton() {}
+
+    // Lazy Initialization. DCL
+    public Singleton getInstance() {
+      if(uniqueInstance == null) {
+         synchronized(Singleton.class) {    // uniqueInstance가 아직 생성되지 않은 경우에만, 동시성 블록을 부여해서 인스턴스 생성!
+            if(uniqueInstance == null) {
+               uniqueInstance = new Singleton(); 
+            }
+         }
+      }
+      return uniqueInstance;
+    }
+}
+```
+<br>
+
+> `volatiole` 키워드가 왜 필요할까?<br>
+> 
+>참고) https://codingdog.tistory.com/entry/java-volatile-%EB%B3%80%EC%88%98%EC%9D%98-%EA%B0%80%EC%8B%9C%EC%84%B1%EA%B3%BC-%EC%B5%9C%EC%A0%81%ED%99%94
