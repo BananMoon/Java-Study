@@ -3,27 +3,117 @@
 ## 1. 싱글턴 (Singleton)
 - 인스턴스가 오직 1개만 생성되어야하는 경우 사용되는 패턴 (디자인 패턴 중 하나)
 - 하나의 인스턴스를 메모리에 등록 -> 여러 스레드가 동시에 해당 인스턴스를 공유하여 사용할 수 있음 -> 요청이 많은 곳에서 효율성↑
+- 하나의 최초 생성 이후에 호출된 생성자는 최초에 생성된 객체를 반환해준다.
 - 주의해야할 점 : **동시성(Concurrency) 문제** 고려해서 싱글턴 설계해야 함<br>
   (➡️[동시성 문제 설명](https://github.com/BananMoon/Java-Study/blob/main/Effective%20Java_book/Item3_%EB%8F%99%EC%8B%9C%EC%84%B1%EB%AC%B8%EC%A0%9C.md) 참고)
+- 장점
+  - 고정된 메모리 영역을 얻음으로써 메모리 낭비를 방지할 수 있다.
+  - 데이터를 공유하기 쉽다. (public static으로 생성된 인스턴스)
+- 문제점
+  - 싱글톤 인스턴스가 너무 많은 일을 하거나 많은 데이터를 공유시킬 경우 다른 클래스의 인스턴스들 간에 결합도가 높아져 "개방-폐쇄 원칙" 을 위배할 수 있다.
+  - 따라서 수정이 어려워지고, 이를 사용하는 클라이언트를 테스트하기가 어려워질 수 있다.   (➡️가짜(mock) 구현으로 대체)
 
 <br>
 
-## 싱글턴 패턴 구현에 사용되는 몇가지 이디엄(오랫동안 널리 사용되어 온) 방식
+## 2.단일 스레드 환경에서 싱글턴 패턴 구현
+> (1), (2) 방법 모두 생성자를 `private`으로 감춰두고, 유일한 인스턴스에 접근할 수 있는 수단을 제공한다.
+> - `public static final` 필드로 선언되는 인스턴스 제공
+> - 정적 팩터리 메서드를 public static 멤버로 제공<br>
+> 
+> 대부분 상황에서의 가장 좋은 방법은 (3) 열거 타입 방식의 싱글턴 이다.
+
+### (1) 하나의 public static final 필드를 생성하는 방식의 싱글턴
+```java
+public class Singleton1 {
+  public static final Singleton1 INSTANCE = new Singleton1();
+  private Singleton1() {
+    System.out.println("생성자 호출");
+  }
+}
+```
+➡️ private 생성자는 public static final 필드 Singleton1.INSTANCE를 초기화할 때 딱 한번 호출<br>
+➡️ Singleton1 클래스가 초기화될 때 만들어진 인스턴스가 전체 시스템에서 하나뿐임을 보장<br>
+➡️ 장점 : 1. 해당 클래스가 싱글턴임이 API에 명백히 드러난다.(`public static` 필드가 `final`)   2. 간결함
+<br>
+> **예외!!!!** 권한이 있는 클라이언트는 리플렉션 API인 `AccessibleObject.setAccessible`로 private 생성자를 호출할 수 있다.
+```java
+@Test
+@DisplayName("리플렉션을 사용하면 private 생성자를 호출할 수 있다.")
+public void reflection() throws Exception {
+    Singleton1 singleton1 = Singleton1.INSTANCE;
+    Singleton1 singleton1Reflection;
+
+    Constructor<Singleton1> constructor = Singleton1.class.getDeclaredConstructor();
+    constructor.setAccessible(true);
+    singleton1Reflection = constructor.newInstance();
+    
+    Assertions.assertNotSame(singleton1, singleton1Reflection);
+}
+```
+➡️ 대응책 : 생성자에서 두번 째 객체가 생성되려할 시 예외를 던진다.
+<br>
+
+> 테스트 환경 참고)<br>
+> Test 디렉토리 지정 : https://ildann.tistory.com/5
+> JUnit5에 대하여 : https://sabarada.tistory.com/79
+<br>
+
+### (2) 정적 팩터리 메서드를 public static 멤버로 제공하는 방식의 싱글턴
+```
+public class Singleton2 {
+    public static final Singleton2 INSTANCE = new Singleton2();
+    
+    private Singleton2() {
+        System.out.println("생성자 호출!!");
+    }
+    // 정적 팩터리 메서드
+    public static Singleton2 getInstance() {
+        return INSTANCE;
+    }
+}
+```
+➡️ 위의 테스트 코드 Singleton2.java 작성
+```java
+@Test
+@DisplayName("인스턴스가 전체 시스템에서 하나뿐임을 보장한다.")
+class Singleton1Test {
+    Singleton1 instance1 = Singleton1.INSTANCE;
+    Singleton1 instance2 = Singleton1.INSTANCE;
+
+    //단정(assert) 메소드: 테스트 케이스의 수행 결과를 판별
+    //assertSame(ox, oy): ox와 oy가 같은 객체를 참조하고 있으면(레퍼런스 동일?) 테스트 통과
+    Assertions.assertSame(instance1, instance2);
+}
+```
+➡️ Singleton2.getInstance()는 항상 같은 객체의 참조를 반환하므로 제 2의 Singleton2 인스턴스는 만들어 지지 않는다. (리플렉션 예외 필요)<br>
+➡️ 정적 팩터리 메서드의 장점
+  1. API를 바꾸지 않고도 싱글턴이 아니게 변경 가능<br>
+    (유일한 인스턴스를 반환하던 팩터리 메소드가 호출하는 스레드별로 다른 인스턴스를 넘겨주게 할 수 있다. ) <br>
+  2. 정적 팩터리를 제네릭 싱글턴 팩터리로 만들 수 있다.
+  3. 정적 팩터리의 메서드 참조를 공급자(supplier)로 사용할 수 있다.
+
+### (3) 열거 타입 방식의 싱글턴
+
+➡️ 아래의 **4. Lazy Initialization.Enum (열거 상수 클래스, Thread-safe)** 를 참고<br><br>
+<hr>
+
+## 3. 멀티 스레드 환경에서 안전한 (Thread-safe) 싱글턴 패턴 구현 
+> 싱글턴 패턴 구현에 사용되는 몇가지 이디엄(오랫동안 널리 사용되어 온) 방식
 ### 1. Eager Initialization (이른 초기화, **Thread-safe**)
 - ❓ `static` 키워드의 특징을 이용
 - ❓ 클래스 로더가 초기화하는 시점에 (컴파일 시점에 성격이 결정되는)정적 바인딩을 통해 인스턴스를 메모리에 등록해서 사용하는 것
 - 클래스 로더(라이브러리를 위치시키고 내용물을 읽고 라이브러리들 안에 포함된 클래스들을 읽는 역할. 자바 클래스를 로드하는 역할)에 의해 클래스가 최초로 로딩될 때 객체가 생성되기 때문에 **Thread-safe**하다.
 - 싱글턴 구현 시 중요한 점! 멀티 스레딩 환경에서도 동작 가능하게 구현, 즉 Thread-safe가 보장되어야 한다.<br>
 
-<예시> 아래 Singleton 클래스는 로드될 때 한개의 인스턴스 uniqueInstance가 생성되는 것을 알 수 있다.
+<예시> 아래 Singleton3 클래스는 로드될 때 한개의 인스턴스 uniqueInstance가 생성되는 것을 알 수 있다.
 ```java
-public class Singleton {
+public class Singleton3 {
     // Eager Initialization
-    private static Singleton uniqueInstance = new Singleton();
+    private static Singleton3 uniqueInstance = new Singleton3();
 
     private Singleton() {}
 
-    public static Singleton getInstance() {
+    public static Singleton3 getInstance() {
       return uniqueInstance; 
     } 
 }
@@ -34,15 +124,15 @@ public class Singleton {
 - ❓ 게으른 초기화 방식이란, 컴파일 시점에 인스턴스를 생성 ✖️, **인스턴스가 필요한 시점에 요청**하여 동적 바인딩(런타임 시에 성격 결정)을 통해 인스턴스를 생성하는 방식이다.
 - 메서드에 동기화 키워드를 부여함으로써 Thread-safe를 보장한다.
 ```java
-public class Singleton {
-    private static Singleton uniqueInstance;
+public class Singleton4 {
+    private static Singleton4 uniqueInstance;
 
-    private Singleton() {}
+    private Singleton4() {}
 
     // Lazy Initailization
-    public static synchronzied Singleton getInstance() {
+    public static synchronzied Singleton4 getInstance() {
       if(uniqueInstance == null) {
-         uniqueInstance = new Singleton();
+         uniqueInstance = new Singleton4();
       }
       return uniqueInstance;
     }
@@ -57,17 +147,17 @@ public class Singleton {
 - ❓ **인스턴스가 생성되지 않은 경우에만 동기화 블록이 실행되게끔 구현**하는 방식
 - 멀티 스레드 환경에서 여러개의 스레드가 write하는 상황에는 동기화 블록을 지정해서 원자성을 보장해야 한다.
 ```java
-public class Singleton {
-    private volatile static Singleton uniqueInstance;
+public class Singleton5 {
+    private volatile static Singleton5 uniqueInstance;
 
-    private Sigleton() {}
+    private Sigleton5() {}
 
     // Lazy Initialization. DCL
-    public Singleton getInstance() {
+    public Singleton5 getInstance() {
       if(uniqueInstance == null) {
-         synchronized(Singleton.class) {    // uniqueInstance가 아직 생성되지 않은 경우에만, 동시성 블록을 부여해서 인스턴스 생성!
+         synchronized(Singleton5.class) {    // uniqueInstance가 아직 생성되지 않은 경우에만, 동시성 블록을 부여해서 인스턴스 생성!
             if(uniqueInstance == null) {
-               uniqueInstance = new Singleton(); 
+               uniqueInstance = new Singleton5(); 
             }
          }
       }
@@ -94,7 +184,7 @@ public class Singleton {
 - 대부분의 상황에서 **원소가 하나뿐인 열거 타입**이 싱글턴을 만드는 가장 좋은 방법이다.
 - But, 싱글턴이 Enum 외의 다른 클래스를 상속(extends)해야할 경우엔 사용할 수 없다. (열거 타입이 다른 인터페이스를 구현(implements)하도록 선언할 순 있다.)
 ```java
-public enum Singleton {
+public enum Singleton6 {
     INSTANCE; 
 }
 ```
@@ -103,6 +193,33 @@ public enum Singleton {
   - 복잡한 직렬화 상황이나 리플렉션 공격에도 제2의 인스턴스가 생성되는 것을 막아준다.
 
 ### 5. Lazy Initalization.LazyHolder (게으른 홀더, Thread-safe)
+- 가장 많이 사용되는 싱글턴 구현 방식
+- volatile 이나 synchronized 키워드 없이도 동시성 문제를 해결하여 성능이 뛰어남
+- 내부클래스에서 static변수를 선언해야하는 경우 static 내부 클래스를 선언해야만 한다.
+```java
+public class Singleton7 {
 
+    private Singleton7() {
+      System.out.println("생성자 호출!!");
+    }
+    /**
+     * static member class
+     * static 멤버, 특히 static 메서드에서 사용될 목적으로 선언
+     */
+    private static class InnerInstanceClazz() {
+        // 클래스 로딩 시점에서 생성
+        private static final Singleton7 uniqueInstance = new Singleton7();
+    }
 
+    public static Singleton7 getInstance() {
+        return InnerInstanceClazz.instance;
+    } 
+}
+```
+- Singleton7 클래스에는 내부 클래스인 `InnerInstanceClazz`의 변수가 없어서 static 멤버 클래스이지만 클래스 로더가 초기화 과정을 진행할 때 `InnerInstanceClazz` 메서드를 초기화하지 않고, `getInstance()` 메서드에서 호출할 때 초기화된다.<br>
+- `InnerInstanceClazz` 안에 선언된 `uniqueInstance`가 static이기 때문에 클래스 로딩시점에 한번만 호출될 것이며 final을 사용해 다시 값이 할당되지 않도록 만든다.<br>
+<br>
+
+> 참고 link
 > - https://webdevtechblog.com/%EC%8B%B1%EA%B8%80%ED%84%B4-%ED%8C%A8%ED%84%B4-singleton-pattern-db75ed29c36
+> - https://blog.riyenas.dev/59
