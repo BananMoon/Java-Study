@@ -155,7 +155,7 @@ public class Singleton5 {
     // Lazy Initialization. DCL
     public Singleton5 getInstance() {
       if(uniqueInstance == null) {
-         synchronized(Singleton5.class) {    // uniqueInstance가 아직 생성되지 않은 경우에만, 동시성 블록을 부여해서 인스턴스 생성!
+         synchronized(Singleton5.class) {    // uniqueInstance가 아직 생성되지 않은 경우에만, 클래스 자체에 동시성 블록을 부여해서 멀티 스레드 환경에서의 동시성 문제 해결!
             if(uniqueInstance == null) {
                uniqueInstance = new Singleton5(); 
             }
