@@ -20,7 +20,7 @@
 > - `public static final` 필드로 선언되는 인스턴스 제공
 > - 정적 팩터리 메서드를 public static 멤버로 제공<br>
 > 
-> 대부분 상황에서의 가장 좋은 방법은 (3) 열거 타입 방식의 싱글턴 이다.
+> 대부분 상황에서의 가장 좋은 방법은 (3) 열거 타입 방식의 싱글턴 이다. But 현실적으로 사용X
 
 ### (1) 하나의 public static final 필드를 생성하는 방식의 싱글턴
 ```java
@@ -192,10 +192,45 @@ public enum Singleton6 {
   - 더 간결하고, 추가 노력없이 직렬화할 수 있다.
   - 복잡한 직렬화 상황이나 리플렉션 공격에도 제2의 인스턴스가 생성되는 것을 막아준다.
 
+> **직렬화**
+> - 객체 전달 시(데이터 전송 등)에 컴퓨터가 이해할 수 있는 형식으로 바꿔주는 것을 `직렬화`라고 한다.
+> - 직렬화를 해야하는 이유: "객체" 는 JAVA 에서만 의미있는 형식이므로!
+> - 추가 작업없이 직렬화 및 역직렬화를 테스트해보면, 서로 다른 객체가 생성됨을 알 수 있다. 이를 방지하고자 `readResolve` 메서드를 정의하여 같은 instance를 return하여 인스턴스 생성을 막는다.<br>
+> (why? 역직렬화하면서 새로운 인스턴스를 생성하면 이는 싱글턴 패턴에 어긋남)
+```java
+import java.io.Serializable;
+
+public final class MySingleton implements Serializable {
+	private static final MySingleton INSTANCE = new MySingleton();
+
+	private MySingleton() {
+	}
+
+	public static MySingleton getINSTANCE() {
+		return INSTANCE;
+	}
+
+    // readResolve 메서드를 정의한다.
+	private Object readResolve() {
+        // 싱글턴을 보장하기 위함!
+		return INSTANCE;
+	}
+}
+```
+> - 싱글톤 클래스에 `readResolve` 메서드를 직접 정의하여, 역직렬화 과정에서 만들어지는 인스턴스 대신에 기존에 생성된 싱글톤 인스턴스를 반환하도록 한다.
+> - 역직렬화 과정에서 자동으로 호출되는 `readOject` 메서드가 있지만 `readResolve` 메서드에서 반환되는 인스턴스로 대체된다. (`readObject` 메서드로 만들어진 인스턴스는 가비지 컬렉션 대상이 된다.)
+> - 직렬화 예시
+> ![image](https://user-images.githubusercontent.com/66311276/138712486-7f7b99e2-dbd8-4ffe-a69c-2340f117ffd4.png)
+
+<br><hr>
+
 ### 5. Lazy Initalization.LazyHolder (게으른 홀더, Thread-safe)
 - 가장 많이 사용되는 싱글턴 구현 방식
-- volatile 이나 synchronized 키워드 없이도 동시성 문제를 해결하여 성능이 뛰어남
-- 내부클래스에서 static변수를 선언해야하는 경우 static 내부 클래스를 선언해야만 한다.
+> 이 방법을 왜 가장 많이 사용하는가?
+> 1. synchronized 키워드를 사용하지않고도 동시성 문제를 해결하기 때문에 성능이 뛰어나다.
+> 2. 인스턴스를 생성하는 내부클래스를 `static`으로 선언함으로써, `getInstance()` 에서 내부클래스를 호출할 때 한번 로드(동적 바인딩)되고 **수정 불가능**하다. <br>
+> 결론은 위의 장점들을 조합했기 때문.
+
 ```java
 public class Singleton7 {
 
@@ -206,18 +241,19 @@ public class Singleton7 {
      * static member class
      * static 멤버, 특히 static 메서드에서 사용될 목적으로 선언
      */
-    private static class InnerInstanceClazz() {
-        // 클래스 로딩 시점에서 생성
+
+    private static class InnerInstanceClazz {
+        // static: 클래스 로딩 시점에서 생성 -> 수정 불가능
         private static final Singleton7 uniqueInstance = new Singleton7();
     }
 
     public static Singleton7 getInstance() {
-        return InnerInstanceClazz.instance;
-    } 
+	        return InnerInstanceClazz.uniqueInstance;  
+					// 내부클래스를 호출(이 시점에 생성)해서 반환
+    }
 }
 ```
-- Singleton7 클래스에는 내부 클래스인 `InnerInstanceClazz`의 변수가 없어서 static 멤버 클래스이지만 클래스 로더가 초기화 과정을 진행할 때 `InnerInstanceClazz` 메서드를 초기화하지 않고, `getInstance()` 메서드에서 호출할 때 초기화된다.<br>
-- `InnerInstanceClazz` 안에 선언된 `uniqueInstance`가 static이기 때문에 클래스 로딩시점에 한번만 호출될 것이며 final을 사용해 다시 값이 할당되지 않도록 만든다.<br>
+
 <br>
 
 > 참고 link
