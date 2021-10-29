@@ -17,5 +17,10 @@ public class ImmutableHolder {
 
         final String name="Old";
 //        name = "New";   //error: cannot assign a value to final variable name
+        String s = new String("hello");
+        String a = "hello";
+        String b = "hello";
+        System.out.println(s==a);   //false
+        System.out.println(a==b);   //true
     }
 }
