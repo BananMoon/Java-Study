@@ -50,7 +50,8 @@ name="New";	 // 내부의 char를 변경하는 것이 아닌 새로운 값을 �
 }
 ```
 
-> [참고 링크](https://stackoverflow.com/questions/35384393/how-do-immutable-objects-help-decrease-overhead-due-to-garbage-collection/35384460#35384460)
+> [참고 링크](https://stackoverflow.com/questions/35384393/how-do-immutable-objects-help-decrease-overhead-due-to-garbage-collection/35384460#35384460)<br>
+> [가비지 컬렉션 동작원리](https://mangkyu.tistory.com/118)
 <hr>
 
 ```java
