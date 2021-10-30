@@ -1,11 +1,15 @@
 package Item4;
 
-public final class UtilClass {
+public class UtilClass {
 
+    // abstract 키워드 -> 인스턴스화 막지 못함. 상속받은 하위 클래스로 생성 가능.
+    // private 생성자 추가 -> 인스턴스화 막을 수 있음
+    // private 생성자에 AssertionError 추가 -> 인스턴스 생성하면 Error 발생시킴
+    //
     // 3. private 생성자
     // 3-1. 인스턴스 생성 X
-    // 3-2. 상속 X
-    private UtilClass() {
+    //
+    UtilClass() {
         throw new AssertionError();     // 클래스 안에서 실수로라도 생성자를 호출하지 않기 위해 생성자 내에 Assertion Error 추가
     }
 
@@ -15,9 +19,9 @@ public final class UtilClass {
 
     public static void main(String[] args) {
 
-//		String test = UtilClass.getName();
+        String test = UtilClass.getName();
 //
-//		System.out.println(test);
+        System.out.println(test);
 
 
         // 1. abstract 클래스로 instance 생성 막기
@@ -29,11 +33,7 @@ public final class UtilClass {
 
 
         // 2. abstract, 상속
-//		UtilClass2 utilClass2 = new UtilClass2();
-//		System.out.println(utilClass2.getName());
-    }
-
-    static class UtilClass2 extends UtilClass{
-
+        UtilClass2 utilClass2 = new UtilClass2();
+        System.out.println(utilClass2.getName());
     }
 }
