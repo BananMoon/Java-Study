@@ -1,3 +1,7 @@
+# Item8. finalizer와 cleaner 사용을 피하라
+> 자바의 두가지 객체 소멸자 : finalizer와 cleaner
+
+
 ## 📌Finalizer
 - 예측 불가능, 상황에 따라 위험, 일반적으로 불필요
 - 오동작, 낮은 성능, 이식성 문제의 원인
