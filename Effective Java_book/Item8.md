@@ -45,7 +45,7 @@ public class FinalizerExample {
 > Java에서는 !
 > - 접근할 수 없게된 객체를 회수하는 역할 : 가비지 컬렉터 (Garbage Collector)
 > - 비메모리 자원을 회수하는 용도 : `try-with-resources`와 `try-finally` 사용
-<hr>
+<br>
 
 ## 📌finalizer와 cleaner의 단점
 ### 1. 즉시 수행된다는 보장이 없다.
@@ -92,9 +92,9 @@ public class FinalizerExample {
 > 👉 해결방법 : <br>
 > 상속 자체를 막는 `final` 키워드를 클래스A에 추가 -> 하위 클래스 생성 불가
 >   - 확장해야하는 클래스라면, `finalize` 메서드에 final키워드를 추가 -> 해당 메서드를 오버라이드 불가
-<hr>
+<br>
 
-## 종료해야할 자원(파일/스레드 등)을 담고있는 객체의 클래스에서의 대안책
+## 📌종료해야할 자원(파일/스레드 등)을 담고있는 객체의 클래스에서의 대안책
 1. `AutoCloseable`을 구현(implements)
   - 인터페이스`AutoCloseable`는 추상 메서드 `close`를 갖고있다.<br>
 2. 클라이언트에서 인스턴스를 다 쓴 후 `close` 메서드를 호출  (예외 발생해도 제대로 종료되도록 `try-with-resources` 사용!!)
@@ -115,7 +115,7 @@ public class SampleResource implements AutoCloseable {  // 1. AutoCloseable 구�
 ```
 <br>
 
-**[클라이언트 클래스]**
+**[클라이언트 클래스]이자 권장하는 방법 - `try-with-resources**
 ```java
 public class SampleRunner {
     public static void main(String[] args) throws Exception {
@@ -138,13 +138,102 @@ public class SampleRunner {
     }
 }
 ```
-<hr>
+<br>
 
 ## 📌그럼 finalizer, cleaner는 언제 적절히 쓸까?
-1. "클라이언트에서 객체를 close하지 않았을 때"를 대비한 안전망 역할로 쓰인다.
+> 1. 안전망 역할로서 자원을 반납하고자 하는 경우
+> 2. 네이티브 리소스를 정리해야하는 경우
+
+#### 1. "클라이언트에서 객체를 close하지 않았을 때"를 대비한 안전망 역할로 쓰인다.
 - 자원 반납에 사용될 `close` 메서드를 client가 호출하지 않은 경우, (언제 호출될지 모르지만 안하는 것보단 나으므로) 오버라이드한다.
 - 자바 라이브러리의 일부 클래스(FileInputStrea, FileOutputStream, ThreadPoolExecutor)는 **안전망 역할의 finalizer**를 제공한다.
+<br>
 
-2. 네이티브 피어 (native peer)와 연결된 객체에서 사용
+**[SampleResource 클래스에 추가]**
+```java
+public class SampleResource implements AutoCloseable {  // 1. AutoCloseable 구현(implements)
+    // 기존
+    @Override
+    public void close() throws Exception {  // 2. "클라이언트"에서 인스턴스를 다 쓰고나면 close 메서드 호출
+        System.out.println("Clean up");
+    }
+    public void hello() {
+        System.out.println("hi");
+    }
+
+    // 1. finalize로 안전망 역할. client가 close()를 호출하지 않은 경우를 대비
+    @Override
+    protected void finalize() throws Throwable {
+        if (!this.closed) { // 객체가 안 닫혔으면(false면) close() 호출
+            close();
+        }
+    }
+}
+```
+<br>
+
+#### 2. 네이티브 피어 (native peer)와 연결된 객체에서 사용
 > 네이티브 피어란?<br>
->
+> 일반 자바 객체가 네이티브 메서드를 통해서 기능을 위임한 객체
+
+- GC는 네이티브 객체의 존재를 모른다. (자바 객체가 아니니)
+- 네이티브 피어가 가지고있는 자원이 중요하지 않은(non-critical) 자원일 때에만, `finalizer`나 `clear를 사용해서 해당 자원을 반납할 수 있다.
+- But, 중요한 리소스라면 (성능 저하를 감당할 수 없거나 즉시 자원을 회수해야 한다면) `close` 메소드를 사용하자.
+<br>
+
+## 📌cleaner를 안전망으로 사용하기
+> cleaner를 사용하려면 JDK 버전을 9 이상으로 설정해주어야 한다. (JDK 9부터 finalize는 deprecate되었다.)
+- 가장 Best는 close()를 호출하는 것인데, 클라이언트가 이를 호출하지 않은 경우, 안전망인 `cleaner`를 사용해야 한다. (단지 안전망으로만 쓰이는 Room의 cleaner)
+- 만약 클라이언트가 모든 Room 생성을 `try-with-resources` 블록으로 감쌀 경우, 자동 청소는 전혀 필요 없다. (위 코드 참고)
+
+**[cleaner를 안전망으로 사용하는 클래스 코드]**
+```java
+import java.lang.ref.Cleaner;
+public class Room implements AutoCloseable {
+
+    // clean 작업을 할 별도의 스레드 생성
+    // 해당 클래스 내에서는 Room(바깥 객체)의 자원을 참조하면 안되므로 "static" 키워드!
+    // -> 순환참조가 생겨 GC가 Room 인스턴스를 회수할 기회가 오지 않아 정리 작업이 이루어지지 않는다.
+    private static class RoomCleaner implements Runnable {
+    
+        // run 메서드 내에서 정리 작업이 이루어져야 함.
+        // 1. Room의 close()메소드 호출 (-clean() 호출)  2. GC가 Room 회수할 때까지 client가 close호출 안할 시, cleaner가 호출
+        @Override
+        public void run() {
+            System.out.println("방 청소");
+            numTrash = 0;   // 자원 회수
+        }
+
+        int numTrash;   // 방(room) 안 쓰레기 수
+        RoomCleaner(int numTrash) {
+            this.numTrash = numTrash;
+        }
+    }
+
+    // static 메서드인 create()로 (안전망으로 사용할) CLEANER 객체 생성
+    private static final Cleaner CLEANER = Cleaner.create();
+    
+    // cleanable과 공유할 방의 상태 인스턴스
+    private final RoomCleaner roomCleaner;
+
+    // CLEANER를 직접 쓰는게 아닌 Cleanable 인터페이스로 인스턴스 선언
+    private final Cleaner.Cleanable cleanable;
+
+    // 생성자
+    public Room(int numTrash) {
+        roomCleaner = new RoomCleaner(numTrash);
+        cleanable= CLEANER.register(this, roomCleaner);  // CLEANER 객체로 Room과 roomCleaner를 등록해서 얻음
+    }
+
+    @Override
+    public void close() throws Exception {
+        // AutoCloseable 인터페이스의 추상메서드 clean() 호출 -> 정리 작업하는 RoomCleaner 클래스의 run() 호출
+        cleanable.clean();
+    }
+}
+// 1. 클라이언트가 자원을 사용한 후 Room의 close() 호출 -> cleanable의 clean() 호출 -> roomCleaner의 run() 호출 -> 회수
+// 2. GC가 Room 회수할 때까지 클라이언트가 close() 호출 X -> 안전망!!! cleaner가 roomCleaner의 run() 호출 -> 회수
+```
+<hr><br>
+
+### 👉 결론: cleaner (~JAVA 8: finalizer)는 1. 안전망 역할, 2. non-critical한 네이티브 자원 회수용 으로만 사용하자. (사용 시에도 불확실성과 성능 저하에 주의하자.) 
