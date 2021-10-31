@@ -87,7 +87,7 @@ public class ElecAdapter implements Elec110V {  // 타겟 인터페이스 상속
   
   @Override
   public void powerOn110V() { //110V 콘센트에 연결하는 (오버라이드된) 메서드 내부는
-    elec220V.powerOn220V();   // 220V 콘센트에 연결하는 메서드를 호출
+    elec220V.powerOn220V();   // 220V 콘센트에 연결하는 메서드를 호출 -> 110V 메서드지만 속에서 220V인스턴스로 메서드를 호출해서 변환됨! (어댑터 역할)
   }
 }
 ```
@@ -98,7 +98,7 @@ public class ElecAdapter implements Elec110V {  // 타겟 인터페이스 상속
 public class AdapterHome {
   public static void main(String[] args) {
     Cleaner cl = new Cleaner(); //220V 청소기
-    Elec110V adapter = new ElecAdapter(cl); // cl을 110V 어댑터에 연결
+    Elec110V adapter = new ElecAdapter(cl); // cl을 110V 어댑터에 연결. 어댑터 클래스에서 변환을 해주니까 그 후에는 코드 변경할 필요 없음.
     connect(cl);  // 110V 어댑터를 110V 콘센트에 연결
   }
   
