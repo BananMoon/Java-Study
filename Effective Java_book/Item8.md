@@ -225,6 +225,7 @@ public class Room implements AutoCloseable {
         // run() 은 cleanable에 의해 호출된다.
         // 1. 클라이언트가 자원을 사용한 후, Room의 close() 호출 -> cleanable의 clean() 호출 -> roomCleaner의 run() 호출 -> 회수
         // 2. GC가 Room 회수할 때까지 클라이언트가 close() 호출 X -> 가비지 컬렉터가 Room을 회수할 때 close 메서드를 호출 -> 회수
+        
         @Override
         public void run() {
             System.out.println("방 청소");
@@ -243,14 +244,13 @@ public class Room implements AutoCloseable {
     // cleanable과 공유할 방의 상태 인스턴스
     private final State state;
 
-    // CLEANER를 직접 쓰는게 아닌 Cleanable 인터페이스로 인스턴스 선언
     // cleanable 객체. 수거 대상이 되면 방을 청소한다.
     private final Cleaner.Cleanable cleanable;
 
     // 생성자
     public Room(int numTrash) {
         state = new State(numTrash);
-        cleanable= CLEANER.register(this, state);  // CLEANER 객체로 Room과 state 등록해서 얻음
+        cleanable= CLEANER.register(this, state);  // Runnable 객체 등록 CLEANER 객체로 Room과 state 등록해서 얻음
     }
 
     @Override
