@@ -14,15 +14,17 @@ System.out.println(s1.equals(s2));  //true
 
 ### 재정의하지 않아도 되는 경우
 1. 각 인스턴스가 본질적으로 고유하다.
-- 값(필드)이 아닌 동작(메서드)하는 개체를 표현하는 클래스
-- 예) Thread
+- 값(필드)이 아닌 **동작하는 개체**를 표현하는 클래스
+- 예) Thread, StringBuilder(String을 가변 배열에 담아 메모리 절약, 조작 용이하게 도와주는 클래스)
 
-2. 인스턴스의 논리적 동치성을 검사할 일이 없다.
-> 논리적 동치성(Logical equality)  
-> - 참조타입(reference type) 변수를 비교하는 것. 
-> - 동등성(Equality) : 두개의 오브젝트가 같은 정보를 갖고 있는가
-> - 동일성(Identity) : 두개의 오브젝트가 완전히 같은 오브젝트인가
-> - `==` 연산자
+2. 인스턴스의 논리적 동치성을 검사할 일이 없다.<br>
+❓논리적 동치성(Logical equality)❓
+- 두개의 오브젝트가 같은 정보를 갖고 있는가 
+- 동등성(Equality) 비교
+
+> 참고
+> 1. 동일성(Identity) : 두개의 오브젝트가 완전히 같은 오브젝트인가?
+> 2. `==` 연산자
 >   - primitive 타입의 자료형(byte, short, int, long, float, double, boolean) : 값을 비교(동등성 비교)
 >   - reference 타입의 자료형(클래스의 오브젝트를 생성해서 메모리에 올리고, 그 참조 변수를 반환해주는 연산자인 `new`를 통해 생성된 타입) : 값 비교 시 2가지 의미
 >     1. `==` 연산자 사용 시, 주소값(동일성) 비교
@@ -38,45 +40,85 @@ public boolean equals(Object obj) {
 - Set은 AbstractSet이 구현한 equals를 상속
 
 
-4. 클래스가 private이거나 package-private이고 equals를 사용할 일이 없는 경우
+4. 클래스의 접근 제어자가 `private`이거나 `package-private`(default)이고 equals()를 호출할 일이 없는 경우
 - equals를 재정의해줄 필요가 없다.
 - 이에 더해, equals가 실수로라도 호출되는 걸 막고 싶다면 다음과 같이 재정의한다.
 ```java
 @Override
 public boolean equals(Object o) {
-  throw new AssertionError();
+  throw new AssertionError();   // equals() 호출 시 Error를 던진다.
 }
 ```
 
 ### 재정의가 필요한 경우
-> - 논리적 동치성 (logical equality) : 논리적으로 값이 같은가
-> - 객체 식별성 (Object identity) : 객체의 참조값이 같은가
+> 참고
+> - 논리적 동치성 (logical equality) : 논리적으로 값이 같은가 (동등성)
+> - 객체 식별성 (Object identity) : 객체의 참조값이 같은가 (동일성)
 
-1. 객체 식별성이 아니라 논리적 동치성을 확인해야하는 경우
-
-➕ 상위클래스의 `equals()`에서 논리적 동치성 (logical equality)을 비교하도록 재정의하지 않은 경우<br>
+**1. 객체 식별성이 아니라 논리적 동치성을 확인해야하는 경우**
+- 상위클래스의 `equals()`에서 논리적 동치성 (logical equality)을 비교하도록 재정의하지 않은 경우<br>
 ex) 값 클래스 : 값을 표현하는 클래스 (Integer, String)
 
-- Object의 equals를 사용하면 위의 `String` 코드처럼 같은 내용을 갖고 있지만 다른 객체로 판단한다.
-  - 이를 동등성은 성립하지만, 동일성은 성립하지 않는다는 것 
+- But! 값 클래스여도 값이 같은 인스턴스가 2개 이상 만들어 지지 않도록 보장하는 **인스턴스 통제 클래스**일 경우, 재정의하지 않아도 된다. (Item 1의 정적 팩터리 메서드 장점 #2, `Enum`)<br>
+➡️ 어차피 논리적으로 같은 인스턴스가 2개 이상 만들어지지 않으니 논리적 동치성과 객체 식별성이 사실상 똑같은 의미가 됨.
 
-> But, 값 클래스여도 값이 같은 인스턴스가 2개 이상 만들어 지지 않도록 보장하는 **인스턴스 통제 클래스**일 경우, 재정의하지 않아도 된다. (Item 1의 정적 팩터리 메서드 장점 #2, `Enum`)
--> 어차피 논리적으로 같은 인스턴스가 2개 이상 만들어지지 않으니 논리적 동치성과 객체 식별성이 사실상 똑같은 의미가 됨.
+> 참고<br>
+> - 논리적 동치성과 물리적 동치성
+>   - 물리적 동치성 비교(==) : 메모리에 저장된 변수가 가지는 값이 서로 같은지 비교
+```java
+int a = 10;
+int b = 10;
+String s1 = "ten";
+String s2 = "ten";
+String s3 = new String("ten");
+StringBuilder sb1 = new StringBuilder("ten");
+StringBuilder sb2 = new StringBuilder("ten");
 
-- String 클래스는 데이터 값을 비교(동등성 비교)하도록 equals()를 재정의하였다.
+// 비교
+// 1) a==b : true
+// 2) s1==s2 : true
+// 3) s2==s3 : false (주소값 다름)
+// 4) sb1==sb2 : false (주소값 다름)
+```
+- 리터럴("") 방식으로 생성 시, constant pool 영역으로 찾아가서 이전과 같은 값을 가진 String 객체(s3)가 있다면 그 객체의 주소값 반환하여 참조.
+- 
+>   - 논리적 동치성 비교(equals()) : 핵심 값을 비교하여 두 객체가 서로 동등한지 비교
+```java
+String s1 = "ten";
+String s2 = "ten"; 
+String s3 = new String("ten");
+String s4 = new String("ten");
+StringBuilder sb1 = new StringBuilder("ten");
+StringBuilder sb2 = new StringBuilder("ten");
+
+// 비교
+// 1) s1.equals(s2) : true. 두 객체는 서로 동일(same)하고 동등(equal)하다.
+// 2) s2.equals(s3) : true. 두 객체는 서로 동일하지 않지만(Not same) 동등(equal)하다.
+// 3) s3.equals(s4) : true. 두 객체는 서로 동일하지 않지만(Not same) 동등(equal)하다.
+// 4) sb1.equals(sb2) : false  (StringBuilder는 equals()를 재정의하지 않아서 동일성(주소값)만 비교)
+```
 
 <hr>
 
 ###  재정의할 때 따라야하는 규약 (Object 명세에 적힌 규약)
-1) 반사성 (reflextivity)<br>
-- null이 아닌 모든 참조값 x에 대해, `x.equals(x)`는 true
-객체는 자기 자신과 같아야 한다는 뜻
-`"moon".equals("moon")` <br>
--> 이 조건은 만족하지 못하도록 하는게 더 힘들 듯함
+1) 반사성 (reflextivity)
+- null이 아닌 모든 참조값 x에 대해, `x.equals(x)`는 true이다.
+- 객체는 자기 자신과 같아야 한다는 뜻
+- 예) `"moon".equals("moon")` <br>
+➡️ 이 조건은 만족하지 못하도록 하는게 더 힘들 듯함
 
-2) 대칭성 (Symmetry)<br>
-- null이 아닌 모든 참조 값 x, y에 대해 `x.equals(y)`와 `y.equals(x)`의 결과는 같아야 한다. 
+2) 대칭성 (Symmetry)
+- null이 아닌 모든 참조 값 x, y에 대해 **`x.equals(y)`가 true면 `y.equals(x)`도 true다.** (결과가 같아야 한다.)
 - 두 객체는 서로에 대한 동치 여부에 똑같이 답해야 한다는 뜻
+
+3) 추이성 (Transitivity)
+- null이 아닌 모든 참조 값 x, y, z에 대해 **`x.equals(y)`가 true이고 `y.equals(z)`도 true면 `x.equals(z)`도 true다.**
+
+4) 일관성 (Consistency)
+- - null이 아닌 모든 참조 값 x, y에 대해 **`x.equals(y)`를 반복 호출하면 항상 true or 항상 false를 반환한다.**
+
+5) null-아님
+- null이 아닌 모든 참조 값 x에 대해 **`x.equals(null)`은 false다.**
 
 **[잘못된 코드]**- 대칭성 위배
 ```java
