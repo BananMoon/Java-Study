@@ -104,12 +104,14 @@ ex) 값 클래스 : 값을 표현하는 클래스 (Integer, String)
 **2) 대칭성 (Symmetry)**
 - null이 아닌 모든 참조 값 x, y에 대해 **`x.equals(y)`가 true면 `y.equals(x)`도 true다.** (결과가 같아야 한다.)
 - 두 객체는 서로에 대한 동치 여부에 똑같이 답해야 한다는 뜻
-- [해당 예제]() 참고
+- [해당 예제](https://github.com/BananMoon/Java-Study/blob/main/Effective%20Java_book/Effective%20Java_book/src/Item10/CaseInsensitiveString.java) 참고
 <br>
 
 **3) 추이성 (Transitivity)**
 - null이 아닌 모든 참조 값 x, y, z에 대해 **`x.equals(y)`가 true이고 `y.equals(z)`도 true면 `x.equals(z)`도 true다.**
-- [해당 예제]() 참고
+- 해당 예제 참고
+  - [Point 클래스](https://github.com/BananMoon/Java-Study/blob/main/Effective%20Java_book/Effective%20Java_book/src/Item10/Point.java)
+  - [ColorPoint 클래스](https://github.com/BananMoon/Java-Study/blob/main/Effective%20Java_book/Effective%20Java_book/src/Item10/ColorPoint.java)
 - 추이성 문제와 무한 재귀 문제에 빠질 위험까지 있다.
   - 이를 해결하고자 instanceof 검사 대신 getClass 검사를 사용한다? **해결하지 못한다.**
   - 이는 리스코프 치환 원칙을 위배한다. 
