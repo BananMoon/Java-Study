@@ -1,18 +1,17 @@
 package Item10;
 // 1) 대칭성 예제
 //case-"in"sensitive : 대소문자를 구분하지 않겠다.
-public final class CaseInsensitiveString {  // 상속 x. Override로 인한 실수를 최소화 하고 버그를 줄이기 위해 선언
+public final class CaseInsensitiveString {                                                          // 상속 x. Override로 인한 실수를 최소화 하고 버그를 줄이기 위해 선언
     private final String s;
 
     public CaseInsensitiveString(String s) {
         if (s == null) throw new NullPointerException();    // s가 null값이면 Error 발생
         this.s = s;
-//        this.s = Obejcts.requireNonNull(s);
     }
+
     // equals()를 오버라이드
     @Override
     public boolean equals(Object obj) {
-       /* 문제 */
         if (obj instanceof CaseInsensitiveString) {    // 1. 오브젝트가 CaseInsensitiveString의 인스턴스이냐?
             System.out.println("CaseInsensitiveString 인스턴스!");
             return s.equalsIgnoreCase(((CaseInsensitiveString) obj).s);
@@ -20,7 +19,12 @@ public final class CaseInsensitiveString {  // 상속 x. Override로 인한 실�
 //           System.out.println(s.equalsIgnoreCase(c.s));
 //            return s.equalsIgnoreCase(c.s); // 대소문자를 무시하여 String 클래스의 equalsIgnoreCase() 메서드. 같으면 0 반환
         }
+        if(obj instanceof CaseInsensitiveString) {
+            return s.equalsIgnoreCase(((CaseInsensitiveString) obj).s); // a와 b 비교 .CaseInsensitiveString 인스턴스로 s에 접근
+            // a.equals(b); 일 때 a가 s, b가 obj(((CaseInsensitiveString) obj).s)
+        }
 
+        /* 문제 */
         if (obj instanceof String)   {  // 2. 오브젝트가 String의 인스턴스이냐? ->
             System.out.println("String 인스턴스!");
             return s.equalsIgnoreCase((String) obj);
