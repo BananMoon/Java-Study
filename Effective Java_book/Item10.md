@@ -194,7 +194,7 @@ public class PhoneNumber {
             return true;
         if (!(obj instanceof PhoneNumber))   // 2. instanceof 연산자로 입력이 올바른 타입인지 확인한다.
             return false;
-        PhoneNumber pn = (PhoneNumber) obj;  // 3. 입력을 올바른 타입으로 형변환한다.
+        PhoneNumber pn = (PhoneNumber) obj;  // 3. 입력을 올바른 타입으로 형변환한다. (Object 타입으로 들어왔으므로 비교를 위해 형변환)
         return pn.lineNum == this.lineNum && pn.prefix == this.prefix 
                 && pn.areaCode == this.areaCode;    // 4. 입력 객체와 자기 자신의 대응되는 '핵심' 필드들이 모두 일치하는지 하나씩 검사한다.
     }
@@ -202,10 +202,11 @@ public class PhoneNumber {
 }
 ```
 
-> 3가지 CHECK!
-> 1) 대칭적?
-> 2) 추이성?
-> 3) 일관성?
+> equals를 재정의했다면 3가지를 CHECK하자!
+- 대칭적?
+- 추이성?
+- 일관성?
+
 <hr>
 <br>
 
@@ -213,10 +214,14 @@ public class PhoneNumber {
 1) equals 재정의 시 hashCode도 반드시 재정의한다.
 2) 너무 복잡하게 해결하려하지마라.
    - 일반적으로 별칭(alias)는 비교하지않는게 좋다.
-3) Object 외의 타입을 매개변수로 받는 equals 메서드는 선언 X
-  -> 재정의가 아닌 다중정의가 됨.
+3) Object.equals 메서드의 매개변수가 Object 타입이었으므로 오버라이딩을 하기위해 똑같이 맞춰줘야 한다.
+  -> Object 외의 타입을 매개변수로 받으면, 재정의(오버라이딩)가 아닌 다중정의(오버로딩)가 됨.
 ```java
-public boolean equals(MyClass o) { ... }  //매개변수까지 Object로 같아야 재정의. 이건 다중정의!
+ublic boolean equals(MyClass o) { ... }  //매개변수까지 Object로 같아야 재정의. 이건 오버로딩!
 ```
 
 > 해당 글 관련 예제 전체 링크 : https://github.com/BananMoon/Java-Study/pull/2
+
+
+## 추가 정리🙂
+
