@@ -221,7 +221,3 @@ ublic boolean equals(MyClass o) { ... }  //매개변수까지 Object로 같아�
 ```
 
 > 해당 글 관련 예제 전체 링크 : https://github.com/BananMoon/Java-Study/pull/2
-
-
-## 추가 정리🙂
-
