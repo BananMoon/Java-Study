@@ -4,8 +4,8 @@ public class 계층구조Test {
     public static void main(String[] args) {
         System.out.println("태그 달린 클래스 테스트==========");
 
-        Figure what1 = new Figure(2.5);
-        Figure what2 = new Figure(2.5, 2.5);
+        FigureWithTag what1 = new FigureWithTag(2.5);
+        FigureWithTag what2 = new FigureWithTag(2.5, 2.5);
 
         what1.print();
         what2.print();
@@ -20,5 +20,8 @@ public class 계층구조Test {
         Rectangle.print();
         System.out.println("원 : " + circle.area());
         System.out.println("사각형 : " + rectangle.area());
+        // 추가
+        Square square = new Square(4);
+        System.out.println("정사각형 : " + square.area());
     }
 }

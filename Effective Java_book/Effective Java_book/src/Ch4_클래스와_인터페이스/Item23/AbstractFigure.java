@@ -31,3 +31,9 @@ class Circle extends AbstractFigure {
      @Override
      double area() { return length * width; }     // 4-2)
 }
+// 추가
+class Square extends Rectangle {
+    Square(double side) {
+        super(side, side);
+    }
+}
