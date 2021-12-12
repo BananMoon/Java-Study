@@ -8,7 +8,7 @@ public enum Planet_Ex2 {
     //MERCURY, VENUS, EARTH, MARS, JUPITER, SATURN, URANUS, NEPTURE;
 
     // 각 상수와 연관된 데이터를 내재시키고 싶다?
-    MERCURY(3.302e+23, 2.439e6),
+//    MERCURY(3.302e+23, 2.439e6),
     VENUS(4.869e+24, 6.052e6),
     EARTH(5.975e+24, 6.378e6),
     MARS(6.419e+23, 3.393e6),
@@ -38,4 +38,6 @@ public enum Planet_Ex2 {
     public double surfaceWeight(double mass) {  // 질량으로 구함
         return mass * surfaceGravity;
     }
+
+
 }

@@ -15,6 +15,13 @@ public class EnumType_Ex1 {
     // 3. 프로그램이 깨지기 쉽다.
     // 4. 정수 상수는 문자열로 출력하기 다소 까다롭다.(단지 숫자로만 보인다.)
 
+    public static final String S_APPLE_FUJI = "0";
+    public static final String S_APPLE_PIPPIN = "1";
+    public static final String S_APPLE_GRANNY_SMITH = "2";
+
+    public static final String S_ORANGE_NAVEL = "0";
+    public static final String S_ORANGE_TEMPLE = "1";
+    public static final String S_ORANGE_BLOOD = "2";
     // 지양2 : 문자열 상수를 사용하는 변형 패턴
     // 상수의 의미를 출력할 수 있다는 점만 장점
     // 단점 1. 문자열 값을 그대로 하드코딩해야 한다. (오타를 컴파일러는 확인할 수 x, 런타임 버그 발생)
@@ -34,5 +41,4 @@ public class EnumType_Ex1 {
     // 1. 자바의 열거 타입은 완전한 형태의 클래스이므로 훨씬 강력
     // 2. 열거 타입은 컴파일타임 타입 안전성을 제공한다. 다른 타입의 값을 넘기려하면 컴파일 오류 발생
     // 3. 각자의 이름공간이 있어 이름이 같은 상수도 평화롭게 공존한다.
-
 }
