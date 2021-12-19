@@ -4,12 +4,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
-
+// 상수별 몸체 클래스
 public enum lastOperation_Ex3_3 {
     //생성자가 있어야 가능
     // public static final 이 default
-    PLUS("+") {
-        public double apply(double x, double y) { return x+y;}
+    PLUS("+") { // 클래스
+        public double apply(double x, double y) {
+            System.out.println(this.symbol);
+            return x+y;}
     },
     MINUS("-") {
         public double apply(double x, double y) { return x-y;}
@@ -20,7 +22,7 @@ public enum lastOperation_Ex3_3 {
     DIVIDE("/") {
         public double apply(double x, double y) { return x/y;}
     };
-    private final String symbol;
+    protected final String symbol;
     lastOperation_Ex3_3(String symbol) {
         this.symbol = symbol;   // 상수변수
 
