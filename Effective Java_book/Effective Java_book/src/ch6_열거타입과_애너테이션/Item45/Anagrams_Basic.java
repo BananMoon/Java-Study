@@ -5,12 +5,13 @@ import java.io.IOException;
 import java.util.*;
 
 // 사전 하나를 훑어 원소 수가 많은 아나그램 그룹들을 출력
-public class Anagrams {
+public class Anagrams_Basic {
     public static void main(String[] args) throws IOException {
         File dictionary = new File("C:\\example.txt");   // args[0]
         int minGroupSize = Integer.parseInt("2");   // 값이 2개 이상
 
         Map<String, Set<String>> groups = new HashMap<>();
+        // 1. try-with-resources 블록에서 dictionary 오픈
         try (Scanner s =new Scanner(dictionary)) {
             while (s.hasNext()) {
                 String word = s.next(); // String 한개 씩 저장
