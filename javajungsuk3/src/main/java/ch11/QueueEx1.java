@@ -55,12 +55,12 @@ public class QueueEx1 {
         }
     }
     public static void save(String typing) {
-        if (!"".equals(typing)) {   //!typing.equals("")이 아닌 이유: typing에 null이 들어가게되면 error 발생하니까!
+        if (!"".equals(typing)) {   //!typing.equals("")이 아닌 !"".euqals(typing)인 이유: typing에 null이 들어가게되면 error 발생하니까!
             q.offer(typing);
         }
         //큐에 5개 쌓였는지 확인
         if (q.size() > MAX_SIZE) {
-            q.remove();
+            q.remove(); // 가장 먼저 들어간 데이터 제거(선입후출)
         }
     }
 }
