@@ -19,19 +19,18 @@ public class Period_clone {
         // 2. 위에서 생성한 복사본으로 유효성 검사
         if (this.start.compareTo(this.end) > 0)   // a.compareTo(b) : a가 b보다 크면 1 (thisTime<anotherTime ? -1 : (thisTime==anotherTime ? 0 : 1))
             throw new IllegalArgumentException(this.start + "가 " + this.end + "보다 늦다.");
-
     }
 
-    private Date clone(long time) {
+    public Date clone(long time) {
         return new Date(time);
     }
     public Date getStart() {
         return start;
     }
-
     public Date getEnd() {
         return end;
     }
+
     public static void main(String[] args) {
         Period_clone period_clone = new Period_clone(new Date(), new Date());
         System.out.println( "start = " + period_clone.getStart() + ", end = " + period_clone.getEnd());
@@ -40,29 +39,20 @@ public class Period_clone {
         System.out.println("start = " + c.getStart() + ", 바뀐 end = " + c.getEnd());
 
     }
-
 }
-
 class 공격Child extends Period_clone {
-    private Date start;
-    private Date end;
-
+//    private Date start;
+//    private Date end;
     public 공격Child(Date start, Date end) {
         super(start, end);
-        this.start = start;
-        this.end = end;
+//        this.start = start;
+//        this.end = end;
     }
 
-    public Date clone() {
+    public Date clone(long time) {
         Date d = new Date(10);  // 20 :  Thu Jan 01 09:00:00 KST 1970
         System.out.println("child의 clone 호출");
         return d;
     }
-    public Date getStart() {
-        return start;
-    }
 
-    public Date getEnd() {
-        return end;
-    }
 }
