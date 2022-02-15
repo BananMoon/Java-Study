@@ -11,6 +11,11 @@ public class Random_Ex1 {
     static int random(int n) {
         return Math.abs(rnd.nextInt()) % n;
         // 0~명시한 수 사이의 난수를 양수화시킨 후, 명시한 수로 나눈다.
+        // return rnd.nextInt(n);
+    }
+
+    static int threadLocalRandom(int n) {
+        return ThreadLocalRandom.current().nextInt(n);
     }
 
     public static void main(String[] args) {
