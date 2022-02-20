@@ -11,7 +11,7 @@
 - Java 언어에 대한 공부와 연습하는 공간으로 사용 중입니다.
 - [X] 자바지기 님의 구구단 실습과 과제를 진행한 실습 코드
 - [X] 백기선 님의 『더 자바, 코드를 조작하는 다양한 방법』
-  - [X] JVM 이해   (관련 업로드한 글은 [여기](https://thisisprogrammingworld.tistory.com/174)로 👈😊
+  - [X] JVM 이해   (관련 업로드한 글은 [여기](https://thisisprogrammingworld.tistory.com/174)로 👈😊)
   - [ ] 바이트코드 조작
   - [X] 리플렉션
   - [ ] 다이나믹 프록시
