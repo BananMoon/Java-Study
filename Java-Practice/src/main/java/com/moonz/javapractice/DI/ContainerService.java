@@ -12,7 +12,7 @@ public class ContainerService {
                 Object fieldInstance = createInstance(f.getType()); // Inject 어노테이션이 있는 필드의 클래스 타입
                 f.setAccessible(true);
                 try {
-                    f.set(instance, fieldInstance);
+                    f.set(instance, fieldInstance); // 해당 클래스에 @Inject가 붙은 필드 인스턴스를 setting한다.
                 } catch (IllegalAccessException e) {
                     throw new RuntimeException(e);
                 }
