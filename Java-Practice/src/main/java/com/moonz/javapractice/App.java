@@ -10,5 +10,12 @@ public class App {
         App app = new App();
         String instance = "heap에 저장되는 instance!";
         System.out.println(BookSpringbootApplication.class.getSuperclass());    // 클래스 객체
+
+        // 클래스로더 확인
+        ClassLoader classLoader = App.class.getClassLoader();
+        System.out.println("classLoader = " + classLoader);
+        System.out.println(classLoader.getParent());
+        System.out.println(classLoader.getParent().getParent());
+
     }
 }
