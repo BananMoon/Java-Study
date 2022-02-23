@@ -8,6 +8,12 @@ package Thread;
  */
 public class UseStaticMain {
     public static void main(String[] args) {
+        callStaticSyncBlock();
+
+//        callStaticSyncMethod();
+    }
+
+    private static void callStaticSyncMethod() {
         static_sync_method ssm = new static_sync_method();
         static_sync_method ssm1 = new static_sync_method();
         Thread thread1 = new Thread(() -> {
@@ -17,8 +23,33 @@ public class UseStaticMain {
 //            ssm1.run("thread2");
             ssm1.print("thread2");
         });
+        Thread thread3 = new Thread(() -> {
+//            ssm1.run("thread2");
+            ssm1.print("thread3");
+        });
 
         thread1.start();    // 2
         thread2.start();    // 3
+        thread3.start();
+    }
+
+    static void callStaticSyncBlock() {
+        static_sync_block ssb = new static_sync_block();
+        static_sync_block ssb1 = new static_sync_block();
+        Thread thread1 = new Thread(() -> {
+            ssb.run("thread1");
+        });
+        Thread thread2 = new Thread(() -> {
+            ssb1.print("thread2");
+//            ssb1.print("thread2");
+        });
+        Thread thread3 = new Thread(() -> {
+            ssb1.print("thread3");
+//            ssb1.print("thread3");
+        });
+
+        thread2.start();    // 2
+        thread1.start();    // 3
+        thread3.start();
     }
 }
