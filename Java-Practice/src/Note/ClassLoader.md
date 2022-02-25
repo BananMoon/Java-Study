@@ -1,5 +1,9 @@
 ## 클래스 로더
 - 로딩 - 링크 - 초기화 순으로 진행된다.
+<p align="center">
+  <img src="https://user-images.githubusercontent.com/66311276/155637319-fb38f4d4-dcc6-48af-961d-b8cd27c076ec.png" alt="text" width="500" height="400" />
+</p>
+
 ### 로딩
 - 클래스 로더가 .class 파일(바이트 코드)을 읽고 그 내용에 따라 적절한 바이너리 데이터를 만들어 **메소드 영역**에 저장한다.
 - 메소드 영역에 저장되는 데이터
