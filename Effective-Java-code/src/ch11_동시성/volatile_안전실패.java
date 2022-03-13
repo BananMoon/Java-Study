@@ -2,7 +2,7 @@ package ch11_동시성;
 
 import java.util.concurrent.TimeUnit;
 
-public class volatile_연산실패 {
+public class volatile_안전실패 {
     private static volatile int nextSerialNumber = 0;
 
     public static int generateSerialNumber() {
