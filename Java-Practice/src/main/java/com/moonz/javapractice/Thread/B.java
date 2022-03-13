@@ -1,6 +1,6 @@
 package Thread;
 
-public class B {
+public class B extends Thread{
     public synchronized void run() {
             System.out.println("B locking 실행");
             try {
