@@ -104,7 +104,7 @@ public class Board {
             return new UserPlay.UserPlayResult(false, Game.GameStatus.RUNNING);
         }
         // marking
-        if (userPlay.isMarking()) {
+        if (userPlay.isMarkingPlay()) {
             boolean isAlreadyMarked = selectedCell.isMarked();
             if (isAlreadyMarked) {
                 return new UserPlay.UserPlayResult(false, Game.GameStatus.RUNNING);

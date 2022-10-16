@@ -28,6 +28,9 @@ public class Cell {
         row = changedRow;
         col = changedCol;
     }
+    public void setBomb(boolean isBomb) {
+        this.isBomb = isBomb;
+    }
 
     public boolean isBlank() {
         return number == 0;
