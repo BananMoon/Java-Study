@@ -3,12 +3,12 @@ package com.moonz.javapractice.CrackingCodingInterview.ch7.prob12;
 import java.util.ArrayList;
 import java.util.List;
 
-public class CustomHash<K, V> {
+public class CustomHashTable<K, V> {
     private final List<LinkedListNode<K, V>> hashTable;
     /*
     생성자
      */
-    public CustomHash(int capacity) {
+    public CustomHashTable(int capacity) {
         hashTable = new ArrayList<>(capacity);
         for (int i = 0; i < capacity; i++) {
             hashTable.add(i, null); // LinkedListNode가 들어갈 자리

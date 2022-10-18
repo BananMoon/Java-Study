@@ -10,7 +10,7 @@ public class Test {
         PersonInfo ppl6 = new PersonInfo("Spring", 22);
         PersonInfo ppl7 = new PersonInfo("Anna", 24);   // need update
         PersonInfo[] arr = {ppl1, ppl2, ppl3, ppl4, ppl5, ppl6, ppl7};
-        CustomHash<String, PersonInfo> people = new CustomHash<>(7);
+        CustomHashTable<String, PersonInfo> people = new CustomHashTable<>(7);
         for (PersonInfo p : arr) {
             PersonInfo put = people.put(p.getName(), p);
             System.out.println("hashTable에 입력 : " + put.getName() + ", " + put.getAge()+ "살");
