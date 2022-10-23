@@ -20,20 +20,31 @@ public abstract class Chat {
 }
 
 class GroupChat extends Chat {
-
+    private GroupChat (User user) {
+        participants.add(user);
+    }
     public void addParticipant(User user) {
         participants.add(user);
     }
     public void removeParticipant(User user) {
         participants.remove(user);
     }
+
+    public static GroupChat create(User user) {
+        return new GroupChat(user);
+    }
 }
 
 class PrivateChat extends Chat {
-    public PrivateChat (User user1, User user2) {
+    private PrivateChat (User user1, User user2) {
         participants.add(user1);
         participants.add(user2);
     }
+
+    public static PrivateChat create(User sender, User receiever) {
+        return new PrivateChat(sender, receiever);
+    }
+
     public User getOtherParticipant(User primaryUser) {
         //개인채팅은 1대1
         if (participants.get(0) == primaryUser) {

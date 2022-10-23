@@ -5,11 +5,11 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 사용자 관리 클래스
- * - 친구 추가
- * - 친구 추가 승낙
- * - 친구 추가 거절
- * - 사용자 로그인
+ * 사용자 관리 클래스가 관리하는 기능
+ *  - 친구 추가 요청
+ *  - 친구 추가 승낙
+ *  - 친구 추가 거절
+ *  - 사용자 로그인
  * 추가 가능할 메서드 : 회원가입
  */
 public class UserManager {

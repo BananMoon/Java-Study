@@ -9,10 +9,13 @@ import java.util.HashMap;
 import java.util.Map;
 
 /**
- * 메서드 전송 sendMessageToUser
+ * 사용자 클래스 - 필드: id, name, 개인채팅, 그룹채팅, 연락처목록, 상메, 활동상태, 친구요청 받은목록, 친구요청 목록
+ * 메서드:
+ * 메서드 전송 sendMessageToUser  (이때 chat이 null이면 새로 생성함)
  * 연락처 추가 addContact
  * 수신 친구요청 추가 putReceivedRequests
  * 발신 친구요청 추가 putSentRequests
+ * 그룹/개인 채팅 추가
  */
 @AllArgsConstructor
 public class User {
@@ -27,20 +30,16 @@ public class User {
     private Map<Long, AddRequest> receivedRequests = new HashMap<>();
     private Map<Long, AddRequest> sentRequests = new HashMap<>();
 
-
     /*
     메시지 전송
     1대1 채팅
      */
-    public void sendMessageToPrivateChat (User to, String content) {
+    public void sendMessageToUser (User to, String content) {
         Chat chat = privateChats.get(to.getId());
         if (chat == null) {         // 새로운 채팅이라면
-            chat = new PrivateChat(this, to);
+            chat = PrivateChat.create(this, to);
             privateChats.put(to.getId(), chat);
         }
-        AddRequest request = new AddRequest(this, to, LocalDateTime.now(), RequestStatus.UNREAD);
-        to.receivedRequests.put(this.id, request);
-        this.sentRequests.put(to.getId(), request);
 
         Message message = new Message(content, LocalDateTime.now());
         chat.addMessage(message);
@@ -51,11 +50,12 @@ public class User {
      */
     public boolean sendMessageToGroupChat(Long groupId, String content) {
         Chat chat = groupChats.get(groupId);
-        if (chat != null) {
-            Message m = new Message(content, LocalDateTime.now());
-            return chat.addMessage(m);
+        if (chat == null) {
+            chat = GroupChat.create(this);
         }
-        return false;
+
+        Message m = new Message(content, LocalDateTime.now());
+        return chat.addMessage(m);
     }
 
     /*

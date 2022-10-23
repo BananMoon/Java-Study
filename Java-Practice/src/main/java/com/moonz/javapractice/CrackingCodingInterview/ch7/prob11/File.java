@@ -15,4 +15,13 @@ public class File extends Entry {
     public int getSize() {
         return size;
     }
+
+    @Override
+    public void delete() {
+        size = 0;
+        content = null;
+    }
+
+    // 파일은 자신 삭제 => 크기 0, 빈 내용으로 만들기만.
+
 }

@@ -19,6 +19,14 @@ public class Directory extends Entry {
         super(parent, name);
         contents = new ArrayList<>();   // 빈 디렉토리
     }
+
+    @Override
+    public void delete() {
+        for (Entry entry: contents) {
+            deleteEntry(entry);
+        }
+    }
+
     /*
     파일 크기 구한다.
      */
@@ -51,8 +59,8 @@ public class Directory extends Entry {
     /*
     Etnry 삭제
      */
-    public boolean deleteEntry(Entry entry) {
-        return contents.remove(entry);
+    public void deleteEntry(Entry entry) {
+        contents.remove(entry);
     }
 
     /*

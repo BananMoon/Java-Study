@@ -37,13 +37,10 @@ public abstract class Entry {
     }
 
     /*
-     * 부모가 없으면 자신 삭제 X
-     * 부모가 있으면 부모의 자식(==자신) 삭제
-     * 이때 부모.deleteEntry(~)는 무조건 자식 Directory의 메서드 호출.
+    *  파일은 그냥 자신 삭제
+    * 디렉토리는 아래 자식들 삭제하고 자신 삭제
      */
-    public boolean delete() {
-        if (parent == null) return false;
-        // (부모가 있다면) 부모의 자식들 삭제 (이때 부모는 무조건 Directory)
-        return parent.deleteEntry(this);
-    }
+    public abstract void delete();
+
 }
+

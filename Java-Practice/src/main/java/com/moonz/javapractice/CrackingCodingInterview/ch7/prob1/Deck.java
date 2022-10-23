@@ -7,7 +7,7 @@ import java.util.Random;
 // 플레이어가 사용하는 카드 뭉치 Deck
 public class Deck <T extends Card> {        // TODO 클래스 + 와일드카드(<>) 의미 알아보기
 
-    private List<T > cards;   // 모든 카드.
+    private List<T> cards;   // 모든 카드.
     private int dealtIndex = 0;     // 처리되지 않은(dealt) 첫번째 인덱스
 
     public void setDeckOfCards (ArrayList<T> deckOfCards) {
@@ -45,8 +45,8 @@ public class Deck <T extends Card> {        // TODO 클래스 + 와일드카드(
         if (remainingCardSize() < number) return null;
         T[] hand = (T[]) new Card[number];
         for (int i=0; i<number; i++) {
-            T card = dealCard();
-            hand[i] = card;
+//            T card = dealCard();
+//            hand[i] = card;
         }
         return hand;
     }
