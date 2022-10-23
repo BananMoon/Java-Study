@@ -50,7 +50,8 @@ public class Level {
         if (spotNum == -1) {
             return false;
         }
-        return parkStartAtSpot(spotNum, v);
+//        return parkStartAtSpot(spotNum, v);
+        return true;
     }
 
     /* 주차할 공간 찾기. 찾으면 spot 인덱스를, 못찾으면 -1 */
@@ -62,8 +63,7 @@ public class Level {
 
         for (int i=0; i<spots.length; i++) {
             ParkingSpot spot = spots[i];
-            spot.getRowNum()
-            if (.isAvailable()
         }
+        return 1;
     }
 }

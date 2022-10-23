@@ -14,7 +14,7 @@ public abstract class Vehicle {
     protected List<ParkingSpot> parkingSpots = new ArrayList<>();   // Vehicle의 주차 공간 리스트???
     // protected String licensePlate;   // 어디서 쓰이지?
     @Getter
-    private int spotsNeeded;      // 필요한 주차공간
+    protected int spotsNeeded;      // 필요한 주차공간
     @Getter
     protected VehicleSize size;
 
