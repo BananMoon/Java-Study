@@ -1,7 +1,10 @@
-package com.moonz.javapractice.CPConfig;
+package com.moonz.javapractice.CP_Practice;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+
+import java.sql.Connection;
+import java.sql.SQLException;
 
 public class HikariCPDataSource {
 

@@ -1,5 +1,4 @@
 package com.moonz.javapractice.CrackingCodingInterview.ch2;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.NoArgsConstructor;

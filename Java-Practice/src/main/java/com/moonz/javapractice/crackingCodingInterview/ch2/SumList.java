@@ -1,4 +1,4 @@
-package com.moonz.javapractice.crackingCodingInterview.ch2;
+package com.moonz.javapractice.CrackingCodingInterview.ch2;
 
 // 2.5 리스트의 합
 public class SumList {

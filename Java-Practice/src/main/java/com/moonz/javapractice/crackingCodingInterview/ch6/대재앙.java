@@ -1,4 +1,4 @@
-package com.moonz.javapractice.crackingCodingInterview.ch6;
+package com.moonz.javapractice.CrackingCodingInterview.ch6;
 import java.util.Random;
 
 public class 대재앙 {
