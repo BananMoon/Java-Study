@@ -1,4 +1,4 @@
-package com.moonz.javapractice.crackingCodingInterview.ch2;
+package com.moonz.javapractice.CrackingCodingInterview.ch2;
 
 import java.util.HashSet;
 import java.util.Set;

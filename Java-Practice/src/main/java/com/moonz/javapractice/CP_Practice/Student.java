@@ -1,2 +1,3 @@
-package com.moonz.javapractice.CP_Practice;public class Student {
+package com.moonz.javapractice.CP_Practice;
+public class Student {
 }

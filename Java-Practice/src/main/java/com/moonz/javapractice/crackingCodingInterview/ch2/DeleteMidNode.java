@@ -1,4 +1,4 @@
-package com.moonz.javapractice.crackingCodingInterview.ch2;
+package com.moonz.javapractice.CrackingCodingInterview.ch2;
 
 // 2.3 중간 노드 삭제
 public class DeleteMidNode {

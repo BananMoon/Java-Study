@@ -1,4 +1,4 @@
-package com.moonz.javapractice.crackingCodingInterview.ch2;
+package com.moonz.javapractice.CrackingCodingInterview.ch2;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

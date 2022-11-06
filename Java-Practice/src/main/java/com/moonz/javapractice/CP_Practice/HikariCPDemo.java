@@ -7,7 +7,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class GetService {
+public class HikariCPDemo {
     public static List<Major> fetchData() throws SQLException {
         String SQL_QUERY = "select * from major";
         List<Major> majors = null;
