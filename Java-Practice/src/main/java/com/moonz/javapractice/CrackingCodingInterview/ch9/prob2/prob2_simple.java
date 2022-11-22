@@ -1,9 +1,12 @@
-package com.moonz.javapractice.CrackingCodingInterview.ch9;
+package com.moonz.javapractice.CrackingCodingInterview.ch9.prob2;
 
 import java.util.*;
 
+/**
+ * github code
+ */
 public class prob2_simple {
-    public static LinkedList<Person> findPathBiBFS(Map<Integer, Person> people, int source, int destination) { // TODO people??
+    public static LinkedList<Person> findPathBiBFS(Map<Integer, Person> people, int source, int destination) {
         Queue<PathNode> adj = new LinkedList<>();
         Set<Integer> visited = new HashSet<>();
         /* 출발 노드 add */
@@ -15,8 +18,9 @@ public class prob2_simple {
             Person currPerson = curr.getPerson();
             /* 꺼낸 person이 도착 노드이면 */
             if (currPerson.getID() == destination) {
-                return curr.collapse(false);
+                return curr.collapse(false);    // 출발지에서 출
             }
+
             /* 아직 못찾았으니 다시 인접 노드(friend)를 추가  */
             for (Integer friend : currPerson.getFriends()) {
                 if (!visited.contains(friend)) {

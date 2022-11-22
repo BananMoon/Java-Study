@@ -1,4 +1,4 @@
-package com.moonz.javapractice.CrackingCodingInterview.ch9;
+package com.moonz.javapractice.CrackingCodingInterview.ch9.prob2;
 
 import lombok.Getter;
 
