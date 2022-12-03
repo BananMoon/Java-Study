@@ -12,7 +12,7 @@ package com.moonz.javapractice.CrackingCodingInterview.ch10;
  *
  * 시간 복잡도
  * - 중복된 원소가 없다면, 이분탐색 -> O(log N)
- * - 중복된 원소가 있면으, O(N)
+ * - 중복된 원소가 있으면, O(N)
  */
 public class prob3 {
     public int search(int[] arr, int left, int right, int x) {
