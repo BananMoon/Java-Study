@@ -6,6 +6,7 @@ package com.moonz.javapractice.CrackingCodingInterview.ch10.prob11;
  * 두칸씩 건너뛰면서, i-1과 i 비교 : i가 더 크면 swap / i와 i+1 비교 : i가 더 크면 swap
  * i가 주위 값보다 크도록 한다.
  * => i를 크게 해도 됨! (ver2)
+ * - 시간복잡도 : O(N/2) -> O(N)
  */
 public class Solve3 {
     public static void main(String[] args) {

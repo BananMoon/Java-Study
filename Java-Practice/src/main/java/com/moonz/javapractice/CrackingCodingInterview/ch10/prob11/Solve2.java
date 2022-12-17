@@ -4,6 +4,7 @@ package com.moonz.javapractice.CrackingCodingInterview.ch10.prob11;
  * - 풀이
  * 1. idx=1부터 2씩 증가하며 idx-1, idx, idx+1 중 가장 큰 값을 구한다.
  * 2. 그 큰 값의 인덱스가 idx와 같으면 그냥 두고, 다르면 swap한다.
+ * - 시간 복잡도 : O(2/N) -> O(N)
  */
 public class Solve2 {
 
