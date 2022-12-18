@@ -25,7 +25,7 @@ public class RankNode {
             } else {
                 this.left = new RankNode(d);
             }
-            leftSize++;  // 기준 노드보다 작은 값이 들어오면 카운터 증가!
+            this.leftSize++;  // 기준 노드보다 작은 값이 들어오면 현재 노드의 leftSize 증가!
         }
     }
 
@@ -35,6 +35,7 @@ public class RankNode {
     public int getRank (int d) {
         if (this.data == d) {
             return this.leftSize;
+
         } else if (this.data < d) { /* 현재 노드 값보다 큰 값이면 */
             int rightSize = this.right == null? -1 : this.right.getRank(d); // 값이 없다면 -1 반환 처리!!! 아니라면 오른쪽 트리로 이동
             /* 현재 노드의 오른쪽 트리 중 d를 찾으면서 계산한 값 right_total에 대한 체크 */

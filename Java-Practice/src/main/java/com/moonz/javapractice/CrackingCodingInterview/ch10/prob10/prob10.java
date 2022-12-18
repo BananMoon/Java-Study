@@ -5,6 +5,7 @@ package com.moonz.javapractice.CrackingCodingInterview.ch10.prob10;
  * - 방법
  * 1. 값이 정렬되어있다면 getRankOfNumber()는 효율적이지만, track()은 매 값을 추가할 때마다 원소들을 옮겨야해 비효율적이다.
  * 2(selected). 이진 탐색 트리 : 원소 간 상대적 순서를 유지하면서 새로운 값이 들어와도 효율적으로 배치되는 자료 구조
+ *   - 시간복잡도 : 삽입&랭킹 구할 때: 균형잡힌 트리에서는 O(logN), 균형잡히지 않은 트리에서는 모두 탐색하므로 O(N)
  */
 public class prob10 {
     static RankNode root = null;
